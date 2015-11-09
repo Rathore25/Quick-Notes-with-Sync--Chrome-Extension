@@ -1,6 +1,9 @@
 //Authors : Nitish Singh and Gourav Goyal
 
 document.addEventListener('DOMContentLoaded', function () {
+	textContent		=$(".text-content");
+	footerTime		=$(".time");
+	footerStatus	=$(".status");
 	//set last position of cursor
 	function setCursor(input, selectionStart, selectionEnd) {
 		var controlName=document.getElementById(input);
@@ -13,27 +16,37 @@ document.addEventListener('DOMContentLoaded', function () {
 	//set last dimension
 	function setDimension() {
 		chrome.storage.local.get(["height","width"], function (obj) {
-			$(".text-content").height(obj["height"]);
-			$(".text-content").width(obj["width"]);
+			if( obj["height"] && obj["width"] ) {
+				textContent.height(parseInt(obj["height"]));
+				textContent.width(parseInt(obj["width"]));
+			}
+			else
+			{
+				textContent.height(299);
+				textContent.width(248);
+			}				
 		});
 	}
 	
-	chrome.windows.getCurrent(function(w) {		
-		textContent		=$(".text-content");
-		footerTime		=$(".time");
-		footerStatus	=$(".status");
+	chrome.windows.getCurrent(function(w) {
 		textContent.focus();
-		chrome.storage.sync.get(["notes","lastUpdate","cursorPosition"], function (obj) {
-			textContent.html((obj["notes"]));
-			footerTime.html(obj["lastUpdate"]);
-			footerStatus.html("Welcome..").css("color","deeppink");
+		chrome.storage.sync.get(["notes","lastUpdate"], function (obj) {
 			setDimension();
-			setCursor("text-content",obj["cursorPosition"],obj["cursorPosition"]);
+			var notes,lastUpdate;
+			if($.trim(obj["notes"])){	notes=$.trim(obj["notes"]);	}	else{	notes="";}
+			if($.trim(obj["lastUpdate"])){	lastUpdate=obj["lastUpdate"];}	else{ lastUpdate="";}
+			textContent.html(notes);
+			footerTime.html(lastUpdate);
+			footerStatus.html("Welcome..").css("color","deeppink");
+		});
+		chrome.storage.local.get("cursorPosition",function(obj){
+			var cursorPosition;
+			if($.trim(obj[cursorPosition])){	cursorPosition=parseInt(obj["cursorPosition"]);}	else{	cursorPosition=0;}
+			setCursor("text-content", cursorPosition, cursorPosition);
 		});
 	});
 	
 	document.addEventListener("keydown",function (e) {
-		
 		//support for tab key
 		var keyCode = e.which;
 		if (keyCode == 9) {
@@ -46,28 +59,20 @@ document.addEventListener('DOMContentLoaded', function () {
 		footerStatus.html("Taking notes..").css("color","red");
 	});
 	
-	document.addEventListener("click",function(e){
-		
-	});
-	
 	document.addEventListener("keyup", function (e) {
         var current     = new Date();
 		var lastUpdate  = "Edited on "+current.getDate()+"-"+current.getMonth()+"-"+current.getFullYear()+" at "+current.getHours()+":"+current.getMinutes()+":"+current.getSeconds();
-		cursorPosition 	= $('.text-content').prop("selectionStart");
-		chrome.storage.sync.set({"notes": textContent.val(),"lastUpdate": lastUpdate, "cursorPosition":cursorPosition}, function() {
+		chrome.storage.sync.set({"notes": textContent.val(),"lastUpdate": lastUpdate}, function() {
 			footerStatus.html("Saved..").css("color","green");
 			footerTime.html(lastUpdate);
 		});
 	});
 	
-	$(".text-content").blur(function(){
-		
-		cursorPosition = $('.text-content').prop("selectionStart");
-		chrome.storage.local.set({"height": $(".text-content").height(), "width" : $(".text-content").width(),"cursorPosition":cursorPosition }, function() {
-
-      setDimension();
+	textContent.blur(function(){
+		cursorPosition = textContent.prop("selectionStart");
+		chrome.storage.local.set({"height": textContent.height(), "width" : textContent.width(),"cursorPosition":cursorPosition }, function() {
+			//Do something incredible
        });
-	})
-	
+	})	
 	
 });

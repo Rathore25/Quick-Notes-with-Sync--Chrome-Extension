@@ -23,12 +23,12 @@ body{
 .text-content {
 	background: url(../images/notebook.png) repeat-y;
     background-position-y: 0px;
-    min-width: 250px;
-    min-height: 301px;
+    min-width: 100px;
+    min-height: 150px;
     font: normal 13px verdana;
     line-height: 25px;
     border: 0px;
-    /*padding: 0px;*/
+    padding: 0px 0px 0px 8px;
 	outline:0;
 }
 ::-webkit-scrollbar {
