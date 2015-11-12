@@ -1,7 +1,7 @@
 //Authors : Nitish Singh and Gourav Goyal
 
 document.addEventListener('DOMContentLoaded', function () {
-	textContent		=$(".text-content");
+	textContent		=$("#text-content");
 	footerTime		=$(".time");
 	footerStatus	=$(".status");
 	//set last position of cursor
@@ -14,34 +14,56 @@ document.addEventListener('DOMContentLoaded', function () {
 	}
 	
 	//set last dimension
-	function setDimension() {
-		chrome.storage.local.get(["height","width"], function (obj) {
-			if( obj["height"] && obj["width"] ) {
-				textContent.height(parseInt(obj["height"]));
-				textContent.width(parseInt(obj["width"]));
-			}
-			else
-			{
-				textContent.height(299);
-				textContent.width(248);
-			}				
-		});
-	}
+	// function setdimension() {
+		// chrome.storage.local.get(["height","width"], function (obj) {
+			// if( obj["height"] && obj["width"] ) {
+				// textcontent.height(parseint(obj["height"]));
+				// textcontent.width(parseint(obj["width"]));
+			// }
+			// else
+			// {
+				// textcontent.height(300);
+				// textcontent.width(260);
+			// }				
+		// });
+	// }
+	
+	$("#theme1").click(function(){
+		$("#notes-body").removeClass();
+		$("#notes-body").addClass("theme1");
+		$("#text-content").removeClass();
+		$("#text-content").addClass("text-content-theme1");
+	});
+	$("#theme2").click(function(){
+		$("#notes-body").removeClass();
+		$("#notes-body").addClass("theme2");
+		$("#text-content").removeClass();
+		$("#text-content").addClass("text-content-theme2");
+	});
+	$("#theme3").click(function(){
+		$("#notes-body").removeClass();
+		$("#notes-body").addClass("theme3");
+		$("#text-content").removeClass();
+		$("#text-content").addClass("text-content-theme3");
+	});
 	
 	chrome.windows.getCurrent(function(w) {
 		textContent.focus();
-		chrome.storage.sync.get(["notes","lastUpdate"], function (obj) {
-			setDimension();
+		chrome.storage.sync.get(["notes","lastUpdate","cursorPosition"], function (obj) {
+			//setDimension();
 			var notes,lastUpdate;
 			if($.trim(obj["notes"])){	notes=$.trim(obj["notes"]);	}	else{	notes="";}
 			if($.trim(obj["lastUpdate"])){	lastUpdate=obj["lastUpdate"];}	else{ lastUpdate="";}
+			//var cursorPosition;
+			// if($.trim(obj["cursorPosition"])){	cursorPosition=parseInt(obj["cursorPosition"]);}	else{	cursorPosition=0;}
+			// setCursor("text-content", cursorPosition, cursorPosition);
 			textContent.html(notes);
 			footerTime.html(lastUpdate);
 			footerStatus.html("Welcome..").css("color","deeppink");
 		});
 		chrome.storage.local.get("cursorPosition",function(obj){
-			var cursorPosition;
-			if($.trim(obj[cursorPosition])){	cursorPosition=parseInt(obj["cursorPosition"]);}	else{	cursorPosition=0;}
+			var cursorPosition=obj["cursorPosition"];
+			// if($.trim(obj["cursorPosition"])){	cursorPosition=parseInt(obj["cursorPosition"]);}	else{	cursorPosition=0;}
 			setCursor("text-content", cursorPosition, cursorPosition);
 		});
 	});
@@ -68,11 +90,11 @@ document.addEventListener('DOMContentLoaded', function () {
 		});
 	});
 	
-	textContent.blur(function(){
+	document.addEventListener("focusout",function(){
 		cursorPosition = textContent.prop("selectionStart");
 		chrome.storage.local.set({"height": textContent.height(), "width" : textContent.width(),"cursorPosition":cursorPosition }, function() {
 			//Do something incredible
-       });
-	})	
+       });		
+	});
 	
 });

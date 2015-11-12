@@ -1,11 +1,15 @@
 /* Authors : Nitish Singh and Gourav Goyal */
+html{
+	height:342px;
+}
 body{
 	margin:0px;
+	height: 342px;
 }
-.header{
+#notes-header{
     min-height:25px;
 }
-.footer{
+#notes-footer{
 	min-height:15px;
 }
 
@@ -16,20 +20,36 @@ body{
 .status{
 	float:right;
 }
-
-.body{
-    min-height: 300px;
+.theme1{
+	background: url(../images/theme1.jpg) repeat-y;
+    background-position-y: -14px;	
 }
-.text-content {
-	background: url(../images/notebook.png) repeat-y;
+.text-content-theme1{
+	padding-left: 57px !important;
+}
+.theme2{
+	background: url(../images/theme2.jpg) repeat-y;
+    background-position-y: -2px;
+}
+.text-content-theme2{
+	padding-left: 42px !important;
+}
+.theme3{
+	background: url(../images/theme3.jpg) repeat-y;
     background-position-y: 0px;
-    min-width: 100px;
-    min-height: 150px;
+}
+.text-content-theme3{
+	padding-left:35px !important;
+}
+#text-content {
+    width: 260px;
+    height: 300px;
     font: normal 13px verdana;
     line-height: 25px;
     border: 0px;
-    padding: 0px 0px 0px 8px;
+    padding: 0px;
 	outline:0;
+	background:transparent;
 }
 ::-webkit-scrollbar {
     width: 4px;
